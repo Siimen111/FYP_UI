@@ -1,97 +1,101 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# VTrack (AI Merge Prototype)
 
-# Getting Started
-
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
-
-## Step 1: Start Metro
-
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
-
-To start the Metro dev server, run the following command from the root of your React Native project:
+Local AI merge suggestion (no adapter) using Gemma 3 4B:
 
 ```sh
-# Using npm
+python src/fyp_vtrack.py suggest --merge-id <merge_id> --base-model "C:\\Users\\sherm\\FYP\\src\\gemma_3_4b_it" --no-adapter
+```
+
+## Next steps
+
+- Alert when different lawyers edit the same clause (two-way or three-way conflicts).
+- Add feature for outputting new file after merge.
+- Re-integrate three-way merges (safe merge for non-conflicting clauses when three unresolved conflicts remain).
+- Refine the lawyer UI with separate clickable tabs.
+- Package the app as a simple executable for lawyers (open, upload, compare).
+- Add stub login for different lawyers to save preferences and uploader names.
+- Canned demo docs + unit tests for `apply_patch_ops` + integration test `/merge` → `/suggest` → `/apply`.
+- UX polish + logging/audit (hash mismatch warnings, suggestion rationale, export).
+- Demo script + buffer for top failure modes.
+- Fine-tune a new Gemma-based adapter (LoRA) and wire it into `vtrack.suggest`.
+
+## Completed
+
+- Add FastAPI endpoints (`/merge`, `/suggest`, `/apply`, `/commits`, `/commit/{id}`, `/suggestion/{id}`).
+- Minimal UI wired to API (commit picker, conflict list, suggestion panel, apply/skip).
+
+# CLI Testing Quickstart
+
+## 1) Initialize + commit base/left/right
+
+```sh
+python src/fyp_vtrack.py init
+python src/fyp_vtrack.py commit --file contract.json --author "you" --msg "base"
+python src/fyp_vtrack.py commit --file contract_diff.json --author "you" --msg "left"
+python src/fyp_vtrack.py commit --file contract_diff_alt.json --author "you" --msg "right"
+python src/fyp_vtrack.py log --limit 3
+```
+
+## 2) Merge + find the merge ID
+
+```sh
+python src/fyp_vtrack.py merge --base <base_id> --left <left_id> --right <right_id> --out merged_contract.json
+Get-ChildItem .myvcs\ai_requests
+```
+
+The filename (without `.json`) is the `merge_id`.
+
+## 3) Generate a suggestion (base model only)
+
+```sh
+python src/fyp_vtrack.py suggest --merge-id <merge_id> --base-model "C:\\Users\\sherm\\FYP\\src\\gemma_3_4b_it" --mode full
+```
+
+Other modes:
+
+```sh
+python src/fyp_vtrack.py suggest --merge-id <merge_id> --base-model "C:\\Users\\sherm\\FYP\\src\\gemma_3_4b_it" --mode partial
+python src/fyp_vtrack.py suggest --merge-id <merge_id> --base-model "C:\\Users\\sherm\\FYP\\src\\gemma_3_4b_it" --mode alert
+```
+
+## 4) Apply a suggestion (explicit approval required)
+
+```sh
+python src/fyp_vtrack.py apply-suggest --suggestion-id <suggestion_id> --author "you" --msg "apply suggestion" --approve
+```
+
+## 5) View the timeline (merge IDs, parents, clause diffs)
+
+```sh
+python src/fyp_vtrack.py log --show-merge-id --show-parents --show-diffs
+```
+
+# Desktop UI (Electron)
+
+## Setup
+
+```sh
+cd desktop
+npm install
+```
+
+## Run
+
+```sh
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Build and run your app
+## Notes
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+- Ensure the FastAPI server is running (default: `http://127.0.0.1:8000`).
+- Update the API Base URL in the app if your server is bound to a different host/port.
 
-### Android
+### Start the FastAPI server
 
 ```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+VTRACK_DEVICE_MAP=auto VTRACK_MAX_NEW_TOKENS=128 python -m uvicorn vtrack.api:app
 ```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
 
 ```sh
-bundle install
+VTRACK_BASE_MODEL="C:\Users\sherm\FYP\src\gemma_3_4b_it"
 ```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.

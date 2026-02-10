@@ -65,6 +65,11 @@ yarn-error.log
 
 # testing
 /coverage
+src/.myvcs
+src/gemma_3_4b_it
+user_tests/.myvcs
+test_docs
+user_tests
 
 # Yarn
 .yarn/*
