@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VTrack Lawyer View</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="ambient">
+      <div class="blob blob--gold"></div>
+      <div class="blob blob--sage"></div>
+      <div class="grid"></div>
+    </div>
+
+    <main class="shell">
+      <section class="login-screen login-screen--active" id="loginView">
+        <div class="login-panel">
+          <p class="kicker">VTrack Desktop</p>
+          <h1>Lawyer Login</h1>
+          <p class="lead">
+            Select a profile to load your uploader and author defaults.
+          </p>
+          <div class="login-grid">
+            <button class="login-card" data-login-lawyer="lawyer-a">
+              <span class="login-card__label">Lawyer A</span>
+              <span class="login-card__meta">Contract lead</span>
+            </button>
+            <button class="login-card" data-login-lawyer="lawyer-b">
+              <span class="login-card__label">Lawyer B</span>
+              <span class="login-card__meta">Counterparty review</span>
+            </button>
+            <button class="login-card" data-login-lawyer="lawyer-c">
+              <span class="login-card__label">Lawyer C</span>
+              <span class="login-card__meta">Risk analyst</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <div class="view app-shell" id="lawyerView">
+        <header class="hero">
+          <div class="hero__top">
+            <p class="kicker">Contract Change Desk</p>
+            <div class="hero__actions">
+              <button id="openSettings" class="btn btn--ghost" type="button">
+                System settings
+              </button>
+              <button id="logoutButton" class="btn btn--ghost" type="button">
+                Log out
+              </button>
+            </div>
+          </div>
+          <h1>Timeline & Suggestions</h1>
+          <p class="lead">
+            Upload a contract, track lawyer edits, and review clean suggestions
+            without commit jargon.
+          </p>
+        </header>
+
+        <section class="panel">
+          <h2>Upload Contract</h2>
+          <p class="meta">
+            Start the timeline or make a commit by uploading a DOCX/TXT file.
+          </p>
+          <label>
+            Uploader
+            <input id="uploaderName" type="text" value="Lawyer A" disabled />
+          </label>
+          <label>
+            Matter Name
+            <input
+              id="matterName"
+              type="text"
+              value="Master Services Agreement"
+            />
+          </label>
+          <label>
+            DOCX or TXT File
+            <input id="docxFile" type="file" accept=".docx,.txt" />
+          </label>
+          <div class="progress" id="uploadProgress" aria-hidden="true">
+            <div class="progress__label">Idle</div>
+            <div class="progress__bar">
+              <div class="progress__fill"></div>
+            </div>
+          </div>
+          <button id="uploadStart" class="btn btn--primary">
+            Upload & start
+          </button>
+        </section>
+
+        <section class="panel">
+          <div class="panel__head">
+            <h2>Timeline of Changes</h2>
+            <div class="status" id="commitStatusLawyer">Idle</div>
+          </div>
+          <p class="meta">
+            Assign each change to Lawyer A, B, or C so we can compare edits.
+          </p>
+          <div class="timeline" id="lawyerCommitList"></div>
+        </section>
+
+        <section class="panel">
+          <h2>Review Conflicts</h2>
+          <p class="meta">
+            Select a change above to review conflict clauses and generate a
+            suggestion.
+          </p>
+          <div class="conflict-card">
+            <div class="conflict-header">
+              <div>
+                <p class="kicker">Selected change</p>
+                <h3 id="conflictTitle">None selected</h3>
+              </div>
+              <button id="runSuggestFromConflict" class="btn btn--primary" disabled>
+                Generate suggestion
+              </button>
+            </div>
+            <div class="conflict-list" id="conflictList">
+              <p class="meta">No change selected.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Suggestions</h2>
+          <div class="progress" id="suggestProgressLawyer" aria-hidden="true">
+            <div class="progress__label">Idle</div>
+            <div class="progress__bar">
+              <div class="progress__fill"></div>
+            </div>
+          </div>
+          <div class="result" id="suggestResultLawyer"></div>
+          <div class="inline-actions" id="suggestActionsLawyer"></div>
+        </section>
+
+        <section class="panel">
+          <h2>Apply to Contract</h2>
+          <label>
+            Author
+            <input id="authorLawyer" type="text" value="Lawyer A" />
+          </label>
+          <label>
+            Message
+            <input id="messageLawyer" type="text" value="Apply suggestion" />
+          </label>
+          <button id="runApplyLawyer" class="btn btn--primary">
+            Apply to document
+          </button>
+          <div class="result" id="applyResultLawyer"></div>
+        </section>
+
+      </div>
+    </main>
+    <div class="modal" id="settingsModal" aria-hidden="true">
+      <div class="modal__backdrop" data-modal-close></div>
+      <div class="modal__card" role="dialog" aria-modal="true">
+        <div class="modal__header">
+          <div>
+            <p class="kicker">System Settings</p>
+            <h2>VTrack Configuration</h2>
+          </div>
+          <button class="btn btn--ghost" data-modal-close type="button">
+            Close
+          </button>
+        </div>
+        <label>Suggestion Mode</label>
+        <div class="segmented">
+          <button class="segment segment--active" data-suggest-mode="full">
+            Full suggestion
+          </button>
+          <button class="segment" data-suggest-mode="partial">
+            Partial suggestion
+          </button>
+          <button class="segment" data-suggest-mode="alert">
+            Alert only
+          </button>
+        </div>
+        <label>
+          API Base URL
+          <input id="apiBaseLawyer" type="text" />
+        </label>
+        <label>
+          Base Model Path
+          <input id="baseModelLawyer" type="text" />
+        </label>
+      </div>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>

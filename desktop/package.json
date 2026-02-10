@@ -1,0 +1,14 @@
+{
+  "name": "vtrack-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "start:console": "electron . --view=console",
+    "start:lawyer": "electron . --view=lawyer"
+  },
+  "devDependencies": {
+    "electron": "^30.1.2"
+  }
+}
