@@ -1,0 +1,33 @@
+{
+  "doc_id": "doc_demo",
+  "title": "Demo Contract v2",
+  "clauses": [
+    {
+      "cid": "c_1",
+      "heading": "Payment",
+      "text": "<<<CONFLICT>>>\n--- LEFT (6b6e7315c98af373a526303ece9c29d2fb284113) ---\nPayment is due within 20 business days of invoice receipt.\n\n--- RIGHT (e35725b38e6462e660f4cf841aa961812fce84ab) ---\nPayment is due within 5 business days of invoice receipt.\n<<<END CONFLICT>>>"
+    },
+    {
+      "cid": "c_2",
+      "heading": "Term",
+      "text": "<<<CONFLICT>>>\n--- LEFT (6b6e7315c98af373a526303ece9c29d2fb284113) ---\nThe term of this agreement is 30 months from the effective date.\n\n--- RIGHT (e35725b38e6462e660f4cf841aa961812fce84ab) ---\nThe term of this agreement is 6 months from the effective date.\n<<<END CONFLICT>>>"
+    },
+    {
+      "cid": "c_3",
+      "heading": "Governing Law",
+      "text": "This agreement is governed by the laws of New York.",
+      "clause_hash": "54387c3211d5991b158d7625af615f6977f7c969d51a560eaa9c068d5a74fb8a"
+    }
+  ],
+  "merge_meta": {
+    "merge_id": "773ccc3cd928eb53dc44da98b481c3686fab4178",
+    "base": "b64911ca349a95ded67a72d360152727d04be1cd",
+    "left": "6b6e7315c98af373a526303ece9c29d2fb284113",
+    "right": "e35725b38e6462e660f4cf841aa961812fce84ab",
+    "timestamp_utc": "2026-02-07T14:12:22.573929+00:00",
+    "conflict_cids": [
+      "c_1",
+      "c_2"
+    ]
+  }
+}
